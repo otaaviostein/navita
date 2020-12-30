@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html ng-app="baseApp" ng-controller="mainController">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/styles/global.css">
+    <link rel="stylesheet" href="src/styles/content.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="src/scripts/scripts.js"></script>
+    <script src="src/scripts/services/getBrands.js"></script>
+    <script src="src/scripts/services/getModel.js"></script>
+
+
+    <title>Teste Navita</title>
+</head>
+<body>
+    <header>
+        <nav class="nav box-shadow">
+            <a href="#">Navita</a>
+        </nav>
+    </header>
+    
+    <section id="content-body">
+        <div class="content-head">
+            <h1>Veículos</h1>
+        </div>
+        <div class="content-table box-shadow">
+            <div class="title">
+                <h4>Marcas</h4>
+            </div>
+
+            <div class="table">
+
+                <div class="loading" ng-if="loadingBrand">
+                    <i class="fas fa-spinner fa-5x fa-spin"></i>
+                </div>
+                
+                <table ng-if="!loadingBrand">
+                    <tr>
+                        <th>Marca</th>
+                        <td></td>
+                    </tr>
+                    <tr ng-repeat="brands in brands_json | startFromBrand:currentPageBrand*pageSizeBrand | limitTo:pageSizeBrand">
+                        <td>{{brands.nome}}</td>
+                        <td><button ng-click="getModel(brands.codigo)" ng-class="{'active': brands.codigo == active, 'none': brands.codigo != active}">Ver Modelos</button></td>
+                    </tr>
+                </table>
+                <div class="pagination" ng-show="!loadingBrand">
+                    <button ng-disabled="currentPageBrand == 0" ng-click="currentPageBrand=currentPageBrand-1">
+                        Anterior
+                    </button>
+                    <span>{{currentPageBrand+1}} / {{numberOfPagesBrand()}}</span>
+                    <button ng-disabled="currentPageBrand >= brands_json.length/pageSizeBrand - 1" ng-click="currentPageBrand=currentPageBrand+1">
+                        Próxima
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-table box-shadow" ng-show="showModel">
+            <div class="title">
+                <h4>Modelos</h4>
+            </div>
+            
+            <div class="table">
+                <div class="loading" ng-if="loadingModel">
+                    <i class="fas fa-spinner fa-2x fa-spin"></i>
+                </div>
+                <table ng-if="!loadingModel">
+                    <tr>
+                        <th>Modelo</th>
+                    </tr>
+                    <tr ng-repeat="model in model_json | startFromModel:currentPageModel*pageSizeModel | limitTo:pageSizeModel">
+                        <td>{{model.nome}}</td>
+                    </tr>
+                </table>
+                <div class="pagination" ng-show="!loadingModel">
+                    <button ng-disabled="currentPageModel == 0" ng-click="currentPageModel=currentPageModel-1">
+                        Previous
+                    </button>
+                    <span>{{currentPageModel+1}} / {{numberOfPagesModel()}}</span>
+                    <button ng-disabled="currentPageModel >= model_json.length/pageSizeModel - 1" ng-click="currentPageModel=currentPageModel+1">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="footer">
+        <h5>Copyright &#169; Navita 2020</h5>
+    </section>
+</body>
+</html>
